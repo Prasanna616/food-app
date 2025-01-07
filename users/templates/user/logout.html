@@ -1,2 +1,21 @@
-<h1>You have been Logged Out</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <script>
+        // Prevent back navigation and redirect to login
+        window.history.replaceState(null, null, window.location.href);  // Clear history
+        window.addEventListener('popstate', function () {
+            window.location.href = "/login";  // Redirect to login
+        });
+    </script>
+</head>
+<body>
+    <h1>You have been logged out successfully!</h1>
+    <p><a href="/login">Login</a></p>
+</body>
+</html>
+
 

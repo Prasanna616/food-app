@@ -19,7 +19,7 @@
             <a class="nav-item navbar-link ms-3 text-decoration-none" href="#"> View Item </a>
             {% if user.is_authenticated %}
                 <a class="nav-item navbar-link ms-3 text-decoration-none" href="{% url 'profile' %}"> Profile </a>></a>
-                <form method="post" action="{% url 'logout' %}?next=/profile" class="d-inline">
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
                     {% csrf_token %}
                 <button type="submit" class="nav-item navbar-link ms-3 me-2 text-decoration-none bg-dark text-white border-0">Logout</button></form>
             {% else %}
