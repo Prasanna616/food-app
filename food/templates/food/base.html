@@ -14,7 +14,7 @@
         <a href="#" class="navbar-brand ms-5"> FoodApp </a>
 
         <div class="navbar">
-            <a class="nav-item navbar-link ms-3 text-decoration-none" href="#"> Add Item </a>
+            <a class="nav-item navbar-link ms-3 text-decoration-none" href="{% url 'food:create_item'%}"> Add Item </a>
             <a class="nav-item navbar-link ms-3 text-decoration-none" href="#"> Delete Item </a>
             <a class="nav-item navbar-link ms-3 text-decoration-none" href="#"> View Item </a>
             {% if user.is_authenticated %}
