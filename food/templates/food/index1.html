@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> This is just a Template </h1>
-</body>
-</html>
+{% extends 'food/base.html' %}
+
+{% load static %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            {% for item in item_list %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        {% if item.item_image %}
+                            <img src="{{ item.item_image }}" class="card-img-top" alt="{{ item.item_name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top img-fluid" alt="Placeholder" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.item_name }}</h5>
+                            <p class="card-text">{{ item.item_des }}</p>
+                            <p class="card-text">{{ item.user_name }}</p>
+                            <h6 class="text-muted">${{ item.item_price }}</h6>
+                            <!-- Add Detail button -->
+                            <a href="{% url 'food:detail' item.id %}" class="btn btn-success">Detail</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
