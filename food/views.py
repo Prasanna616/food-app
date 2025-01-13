@@ -6,6 +6,8 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from .forms import ItemForm
+from django.contrib.auth.decorators import login_required #Redirects to Login if user is not authenticated
+from django.contrib.auth.mixins import LoginRequiredMixin #Redirects to Login if user is not authenticated 
 
 # Create your views here.
 
@@ -52,10 +54,12 @@ def create_item(request):
     
     return render(request,'food/item-form.html',{'form':form})
 
-class CreateItem(CreateView):
+class CreateItem(LoginRequiredMixin, CreateView):
     model = Item;
     fields = ['item_name','item_des','item_price','item_image']
     template_name = 'food/item-form.html'
+
+    login_url = '/login/' 
 
     def form_valid(self, form):
         form.instance.user_name = self.request.user
@@ -72,7 +76,7 @@ def update_item(request,id):
     
     return render(request,'food/item-form.html',{'form':form, 'item':item})
     
-
+@login_required
 def delete_item(request, id):
     item = Item.objects.get(id=id);
 
