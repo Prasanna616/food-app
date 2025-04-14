@@ -1,3 +1,4 @@
-This is a Food app with User Login features.
-
-Clone the repo and run the django server on your local machine.
+Features:
+1. Only admin can delete the item from details page.
+2. Users can view the items after login.
+3. Signals are implemented to create user profile entry soon after sign up.
