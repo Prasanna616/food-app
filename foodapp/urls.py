@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('github_webhook/',food_views.github_webhook, name='github_webhook')
+    path('github_webhook/',food_views.github_webhook, name='github_webhook'),
     path('',include('food.urls')),
     path('register/',user_views.register, name='register'),
     #path('logout/',user_views.logout, name='logout'),
