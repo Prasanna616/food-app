@@ -1,5 +1,11 @@
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
+import hmac
+import subprocess
+import os
+import hashlib
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.shortcuts import redirect, render   
+from django.http import HttpResponse, HttpResponseForbidden
 from .models import Item
 from django.template import loader
 from django.views.generic.list import ListView
@@ -10,6 +16,38 @@ from django.contrib.auth.decorators import login_required #Redirects to Login if
 from django.contrib.auth.mixins import LoginRequiredMixin #Redirects to Login if user is not authenticated 
 
 # Create your views here.
+@csrf_exempt
+def github_webhook(request):
+    if request.method != 'POST':
+        return HttpResponse('Method not allowed', status=405)
+    
+    #Step1: Validate the signature 
+    github_signature = request.headers.get('X-hub-Signature-256')
+    if not github_signature:
+        return HttpResponseForbidden('Signature missing')
+    
+    sha_name, signature = github_signature.split('=')
+    if sha_name != 'sha256':
+        return HttpResponseForbidden('Invalid signature format')
+    
+    #Load the secret from settings or environment 
+    #secret = settings.GITHUB_WEBHOOK_SECRET.encode()
+    secret = os.environ.get('GITHUB_WEBHOOK_SECRET')
+
+    #Generate hmac using request body
+    mac = hmac.new(secret, msg=request.body, digestmod=hashlib.sha256)
+
+    if not hmac.compare_digest(mac.hexdigest(),signature):
+        return HttpResponseForbidden('Invalid signature')
+    
+
+    #Step2: run deploy script
+    try:
+        subprocess.run(['bash','./deploy.sh'], check=True)
+        return HttpResponse('Secure deployment triggered')
+    except subprocess.CalledProcessError as e:
+        return HttpResponse(f'Deployment failed:{str(e)}',status= 500)
+
 
 def index(request):
     # item_list = Item.objects.all()
