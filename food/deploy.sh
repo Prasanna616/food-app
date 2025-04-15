@@ -2,6 +2,9 @@
 
 echo 'starting deployment'
 
+#project source directory
+cd /home/pkweb/food-app
+
 git pull origin newfeature
 
 python manage.py collectstatic --noinput
