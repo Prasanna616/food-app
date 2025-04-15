@@ -43,7 +43,7 @@ def github_webhook(request):
 
     #Step2: run deploy script
     try:
-        subprocess.run(['bash','./deploy.sh'], check=True)
+        subprocess.run(['bash','/home/pkweb/food-app/food/deploy.sh'], check=True)
         return HttpResponse('Secure deployment triggered')
     except subprocess.CalledProcessError as e:
         return HttpResponse(f'Deployment failed:{str(e)}',status= 500)
