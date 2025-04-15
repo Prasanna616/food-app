@@ -2,6 +2,9 @@ import hmac
 import subprocess
 import os
 import hashlib
+from dotenv import load_dotenv # type: ignore
+load_dotenv('/home/pkweb/food-app/.env')
+
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.shortcuts import redirect, render   
@@ -32,7 +35,7 @@ def github_webhook(request):
     
     #Load the secret from settings or environment 
     #secret = settings.GITHUB_WEBHOOK_SECRET.encode()
-    secret = os.environ.get('GITHUB_WEBHOOK_SECRET')
+    secret = os.getenv('GITHUB_WEBHOOK_SECRET')
 
     #Generate hmac using request body
     mac = hmac.new(secret, msg=request.body, digestmod=hashlib.sha256)
