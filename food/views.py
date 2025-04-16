@@ -45,7 +45,6 @@ def github_webhook(request):
     if not hmac.compare_digest(mac.hexdigest(),signature):
         return HttpResponseForbidden('Invalid signature')
     
-
     #Step2: run deploy script
     try:
         print(os.getcwd())
