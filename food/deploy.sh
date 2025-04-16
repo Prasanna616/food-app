@@ -3,9 +3,11 @@
 echo 'starting deployment'
 
 #project source directory
-cd /home/pkweb/food-app
+cd /home/pkweb/food-app/
 
 git pull origin newfeature
+
+pip install -r requirement.txt
 
 python manage.py collectstatic --noinput
 
