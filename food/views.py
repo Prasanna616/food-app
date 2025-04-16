@@ -38,7 +38,7 @@ def github_webhook(request):
     #secret = settings.GITHUB_WEBHOOK_SECRET.encode()
     secret = os.getenv('GITHUB_WEBHOOK_SECRET')
     print(f"Secret:{secret}")
-
+    secret = secret.encode()
     #Generate hmac using request body
     mac = hmac.new(secret, msg=request.body, digestmod=hashlib.sha256)
 
