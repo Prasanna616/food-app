@@ -21,6 +21,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin #Redirects to Login if
 # Create your views here.
 @csrf_exempt
 def github_webhook(request):
+    print(request.method)
     if request.method != 'POST':
         return HttpResponse('Method not allowed', status=405)
     
