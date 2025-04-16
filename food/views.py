@@ -36,6 +36,7 @@ def github_webhook(request):
     #Load the secret from settings or environment 
     #secret = settings.GITHUB_WEBHOOK_SECRET.encode()
     secret = os.getenv('GITHUB_WEBHOOK_SECRET')
+    print(f"Secret:{secret}")
 
     #Generate hmac using request body
     mac = hmac.new(secret, msg=request.body, digestmod=hashlib.sha256)
@@ -46,6 +47,7 @@ def github_webhook(request):
 
     #Step2: run deploy script
     try:
+        print(os.getcwd())
         subprocess.run(['bash','/home/pkweb/food-app/food/deploy.sh'], check=True)
         return HttpResponse('Secure deployment triggered')
     except subprocess.CalledProcessError as e:
