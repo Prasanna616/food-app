@@ -6,6 +6,8 @@ echo 'starting deployment'
 cd /home/pkweb/food-app/
 
 echo 'start git pull'
+git fetch origin
+git reset --hard origin/newfeature
 git pull origin newfeature
 
 pip install -r requirement.txt
