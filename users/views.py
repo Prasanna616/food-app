@@ -28,6 +28,26 @@ def register(request):
 # def logout(request):
 #     return render(request, 'user/logout.html')
 
+def login(request):
+    from django.contrib.auth import authenticate
+    from .forms import LoginForm
+    
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                from django.contrib.auth import login as auth_login
+                auth_login(request, user)
+                return redirect('food:index')
+            else:
+                messages.error(request, 'Invalid credentials. Please try again.')
+    else:
+        form = LoginForm()
+    return render(request, 'user/login.html', {'form': form})
+
 @login_required
 def profile(request):
     return render(request, 'user/profile.html')
