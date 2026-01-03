@@ -31,8 +31,8 @@ class LoginAttempt(models.Model):
         self.locked_until = None
         self.save()
 
-    def lock_for(self, hours=1):
-        self.locked_until = timezone.now() + timedelta(hours=hours)
+    def lock_for(self, minutes=15):
+        self.locked_until = timezone.now() + timedelta(minutes=minutes)
         self.save()
 
     def is_locked(self):
