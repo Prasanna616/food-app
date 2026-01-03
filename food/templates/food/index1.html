@@ -9,14 +9,13 @@
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100">
                         {% if item.item_image %}
-                            <img src="{{ item.item_image }}" class="card-img-top" alt="{{ item.item_name }}" style="height: 200px; object-fit: cover;">
+                            <img src="{{ item.item_image }}" class="card-img-top" alt="{{ item.item_name }}" style="height: 200px; object-fit: scale-down;">
                         {% else %}
                             <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top img-fluid" alt="Placeholder" style="height: 200px; object-fit: cover;">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ item.item_name }}</h5>
                             <p class="card-text">{{ item.item_des }}</p>
-                            <p class="card-text">{{ item.user_name }}</p>
                             <h6 class="text-muted">${{ item.item_price }}</h6>
                             <!-- Add Detail button -->
                             <a href="{% url 'food:detail' item.id %}" class="btn btn-success">Detail</a>
