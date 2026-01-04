@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from .models import LoginAttempt
+from django.utils import timezone
 # Create your views here.
 
 # @never_cache
@@ -13,7 +14,7 @@ from .models import LoginAttempt
 #     logout(request) #Log the user out
 #     return render(request,, 'logout.html')
 max_try = 3
-lock_time = 15  # in minutes
+lock_time = 5  # in minutes
 
 
 
@@ -44,8 +45,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             print(user)
             loginAttempt = LoginAttempt.objects.get_or_create(user=User.objects.get(username=username))
-            if not loginAttempt[0].is_locked():
-                if not loginAttempt[0].failed_attempts >= max_try:
+            if not loginAttempt[0].locked_until > timezone.now():
                     if user is not None:
                         from django.contrib.auth import login as auth_login
                         auth_login(request, user)
@@ -54,10 +54,10 @@ def login(request):
                     else:
                         loginAttempt[0].increment()
                         messages.error(request, 'Invalid credentials. Please try again.')
-                else:
-                    loginAttempt[0].lock_for(minutes=lock_time)
-                    messages.error(request, 'Your account is locked due to multiple failed login attempts. Please try again after 15 minutes.')
-                    return render(request, 'user/login.html', {'form': form})
+                        if loginAttempt[0].failed_attempts >= max_try:
+                            loginAttempt[0].lock_for(minutes=lock_time)
+                            messages.error(request, 'Your account is locked due to multiple failed login attempts. Please try again after 5 minutes.')
+                            return render(request, 'user/login.html', {'form': form})
             else:
                 messages.error(request, 'Your account is locked due to multiple failed login attempts. Please try again later.')
                 return render(request, 'user/login.html', {'form': form})
