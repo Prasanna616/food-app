@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-with-sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001" # Prometheus scrapes the SIDECAR, not Django
+    spec:
+      containers:
+      # --- CONTAINER 1: THE APP ---
+      - name: django-app
+        image: pknashi/food-app:1.2
+        imagePullPolicy: Never
+        env:
+        - name: PROMETHEUS_MULTIPROC_DIR
+          value: "/tmp/prometheus_metrics"
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: metrics-volume
+          mountPath: /tmp/prometheus_metrics
+        command: ["gunicorn", "foodapp.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+      # --- CONTAINER 2: THE SIDECAR ---
+      - name: metrics-sidecar
+        image: pknashi/food-app:1.2 # Use same image for simplicity (it has the script)
+        imagePullPolicy: Never
+        env:
+        - name: PROMETHEUS_MULTIPROC_DIR
+          value: "/tmp/prometheus_metrics"
+        ports:
+        - containerPort: 8001
+        volumeMounts:
+        - name: metrics-volume
+          mountPath: /tmp/prometheus_metrics
+        command: ["python", "exporter.py"]
+
+      volumes:
+      - name: metrics-volume
+        emptyDir: {} # This is the shared "brain" for metrics
+
